@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Pad Configurator v1.1</title>
+    <style>
+        /* Futuristic Purple Glow Theme */
+        body {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #0a0a0a;
+            color: #bb86fc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #bb86fc;
+            text-shadow: 0 0 10px #bb86fc, 0 0 20px #bb86fc;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #bb86fc;
+            text-shadow: 0 0 5px #bb86fc;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            background-color: #1a1a1a;
+            border: 1px solid #bb86fc;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(187, 134, 252, 0.3);
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .config-panel {
+            flex: 1;
+        }
+
+        .color-picker {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .color-picker label {
+            font-size: 1rem;
+            color: #bb86fc;
+            text-shadow: 0 0 5px #bb86fc;
+            margin-bottom: 10px;
+        }
+
+        .color-picker input[type="color"] {
+            width: 100%;
+            height: 50px;
+            border: 1px solid #bb86fc;
+            border-radius: 5px;
+            background-color: #333;
+            cursor: pointer;
+        }
+
+        .add-command {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-command input {
+            flex: 1;
+            padding: 10px;
+            font-size: 1rem;
+            background-color: #333;
+            color: #bb86fc;
+            border: 1px solid #bb86fc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .add-command input:focus {
+            border-color: #bb86fc;
+            box-shadow: 0 0 10px #bb86fc;
+        }
+
+        .add-command button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #bb86fc;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-command button:hover {
+            background-color: #9a6fcf;
+        }
+
+        .macro-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .macro-button {
+            padding: 15px;
+            font-size: 1rem;
+            background-color: #333;
+            color: #bb86fc;
+            border: 1px solid #bb86fc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .macro-button:hover {
+            background-color: #bb86fc;
+            color: #0a0a0a;
+            box-shadow: 0 0 10px #bb86fc;
+        }
+
+        .command-select {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            background-color: #333;
+            color: #bb86fc;
+            border: 1px solid #bb86fc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .command-select:focus {
+            border-color: #bb86fc;
+            box-shadow: 0 0 10px #bb86fc;
+        }
+
+        .connect-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .connect-buttons button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #bb86fc;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .connect-buttons button:hover {
+            background-color: #9a6fcf;
+        }
+
+        .connection-status {
+            font-size: 1rem;
+            color: #bb86fc;
+            text-shadow: 0 0 5px #bb86fc;
+            margin-left: 10px;
+        }
+
+        .send-button {
+            padding: 15px 30px;
+            font-size: 1rem;
+            background-color: #bb86fc;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .send-button:hover {
+            background-color: #9a6fcf;
+        }
+
+        .serial-output {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #bb86fc;
+            background-color: #1a1a1a;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            color: #bb86fc;
+            height: 200px;
+            overflow-y: auto;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(187, 134, 252, 0.3);
+        }
+
+        .serial-output::before {
+            content: "Serial Output:";
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #bb86fc;
+            text-shadow: 0 0 5px #bb86fc;
+        }
+
+        .version {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <h1>Macro Pad Configurator</h1>
+    <div class="container">
+        <div class="config-panel">
+            <h2>Configuration Panel</h2>
+
+            <div class="add-command">
+                <input type="text" id="customCommand" placeholder="Enter custom command (e.g., ctrl+shift+t)">
+                <button onclick="addCustomCommand()">Add Command</button>
+            </div>
+
+            <div class="macro-pad">
+                <div>
+                    <select class="command-select" id="command1"></select>
+                    <button class="macro-button" onclick="sendCommand('command1')">Button 1</button>
+                </div>
+                <div>
+                    <select class="command-select" id="command2"></select>
+                    <button class="macro-button" onclick="sendCommand('command2')">Button 2</button>
+                </div>
+                <div>
+                    <select class="command-select" id="command3"></select>
+                    <button class="macro-button" onclick="sendCommand('command3')">Button 3</button>
+                </div>
+                <div>
+                    <select class="command-select" id="command4"></select>
+                    <button class="macro-button" onclick="sendCommand('command4')">Button 4</button>
+                </div>
+                <div>
+                    <select class="command-select" id="command5"></select>
+                    <button class="macro-button" onclick="sendCommand('command5')">Button 5</button>
+                </div>
+                <div>
+                    <select class="command-select" id="command6"></select>
+                    <button class="macro-button" onclick="sendCommand('command6')">Button 6</button>
+                </div>
+            </div>
+
+            <div class="connect-buttons">
+                <button id="connectButton">Connect to USB</button>
+                <button class="send-button" onclick="sendAllCommands()">Send All Commands</button>
+                <button id="disconnectButton">Disconnect</button>
+                <div class="connection-status" id="connectionStatus">Disconnected</div>
+            </div>
+
+            <div class="serial-output" id="serialOutput"></div>
+        </div>
+
+        <div class="color-picker">
+            <label for="colorPicker">Select Color:</label>
+            <input type="color" id="colorPicker" value="#9669FF">
+        </div>
+    </div>
+
+    <div class="version">v1.1</div>
+
+    <script>
+        let serialPort;
+        let reader;
+        let isReading = false;
+
+        // Predefined list of commands
+        const predefinedCommands = [
+            "ctrl+t", "ctrl+w", "alt+tab", "ctrl+win+left", "ctrl+win+right", "alt+f4",
+            "ctrl+c", "ctrl+x", "Ctrl+v",
+            "f11", "win+tab",
+            "win+d", "win+x", "win+l", "print_screen"
+        ];
+
+        // Initialize dropdowns with predefined commands
+        function initializeDropdowns() {
+            const dropdowns = document.querySelectorAll('.command-select');
+            dropdowns.forEach(dropdown => {
+                predefinedCommands.forEach(command => {
+                    const option = document.createElement('option');
+                    option.value = command;
+                    option.textContent = command;
+                    dropdown.appendChild(option);
+                });
+            });
+        }
+
+        // Call this function when the page loads
+        initializeDropdowns();
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.textContent = connected ? "Connected" : "Disconnected";
+            statusElement.style.color = connected ? "#00ff00" : "#ff0000";
+            statusElement.style.textShadow = connected ? "0 0 5px #00ff00" : "0 0 5px #ff0000";
+        }
+
+        async function connectToUSB() {
+            try {
+                serialPort = await navigator.serial.requestPort();
+                await serialPort.open({ baudRate: 9600 });
+                updateConnectionStatus(true);
+                alert('Connected to USB device');
+
+                // Send "config_request" to the macro pad
+                const writer = serialPort.writable.getWriter();
+                await writer.write(new TextEncoder().encode("config_request\n")); // Add newline for clarity
+                writer.releaseLock();
+
+                // Start reading the response
+                startReading();
+            } catch (error) {
+                alert('Error connecting to USB device: ' + error.message);
+            }
+        }
+
+        async function disconnectFromUSB() {
+            if (serialPort) {
+                stopReading();
+                await serialPort.close();
+                serialPort = null;
+                updateConnectionStatus(false);
+                alert('Disconnected from USB device');
+            }
+        }
+
+        async function startReading() {
+            if (serialPort && serialPort.readable && !isReading) {
+                isReading = true;
+                reader = serialPort.readable.getReader();
+                try {
+                    let buffer = "";
+                    while (isReading) {
+                        const { value, done } = await reader.read();
+                        if (done) {
+                            break;
+                        }
+                        const text = new TextDecoder().decode(value);
+                        buffer += text;
+
+                        // Check if the buffer contains a complete line (ending with newline)
+                        if (buffer.includes("\n")) {
+                            const lines = buffer.split("\n");
+                            for (let i = 0; i < lines.length - 1; i++) {
+                                const line = lines[i].trim();
+                                if (line) {
+                                    // Display the line in the serial output
+                                    document.getElementById('serialOutput').textContent += line + "\n";
+
+                                    // If the line is a space-separated list of commands, update dropdowns
+                                    if (line.includes(" ")) {
+                                        updateCommandDropdowns(line);
+                                    }
+                                }
+                            }
+                            // Keep the remaining partial line in the buffer
+                            buffer = lines[lines.length - 1];
+                        }
+
+                        // Auto-scroll to the bottom
+                        const outputDiv = document.getElementById('serialOutput');
+                        outputDiv.scrollTop = outputDiv.scrollHeight;
+                    }
+                } catch (error) {
+                    console.error('Error reading from serial port:', error);
+                } finally {
+                    reader.releaseLock();
+                    isReading = false;
+                }
+            }
+        }
+
+        async function stopReading() {
+            if (reader) {
+                isReading = false;
+                await reader.cancel();
+            }
+        }
+
+        async function sendCommand(commandId) {
+            const command = document.getElementById(commandId).value;
+            if (serialPort && serialPort.writable) {
+                const writer = serialPort.writable.getWriter();
+                await writer.write(new TextEncoder().encode(command + "\n")); // Add newline for clarity
+                writer.releaseLock();
+            } else {
+                alert('Not connected to USB device');
+            }
+        }
+
+        async function sendAllCommands() {
+            const commands = [
+                document.getElementById('command1').value,
+                document.getElementById('command2').value,
+                document.getElementById('command3').value,
+                document.getElementById('command4').value,
+                document.getElementById('command5').value,
+                document.getElementById('command6').value
+            ].join(" ");
+
+            // Get the selected color and remove the '#' symbol
+            const color = document.getElementById('colorPicker').value.slice(1);
+
+            if (serialPort && serialPort.writable) {
+                const writer = serialPort.writable.getWriter();
+                await writer.write(new TextEncoder().encode(commands + " " + color + "\n")); // Add newline for clarity
+                writer.releaseLock();
+            } else {
+                alert('Not connected to USB device');
+            }
+        }
+
+        function updateCommandDropdowns(commandsString) {
+            const commands = commandsString.split(" ");
+            const dropdowns = document.querySelectorAll('.command-select');
+
+            // Clear only the dynamically added options, not the predefined ones
+            dropdowns.forEach((dropdown, index) => {
+                const options = dropdown.querySelectorAll('option');
+                options.forEach(option => {
+                    if (!predefinedCommands.includes(option.value)) {
+                        option.remove();
+                    }
+                });
+
+                // Add the new commands from the macro pad
+                const command = commands[index];
+                if (command) {
+                    const option = document.createElement('option');
+                    option.value = command;
+                    option.textContent = command;
+                    dropdown.appendChild(option);
+
+                    // Set the selected value to the new command
+                    dropdown.value = command;
+                }
+            });
+        }
+
+        function addCustomCommand() {
+            const customCommand = document.getElementById('customCommand').value.trim();
+            if (customCommand) {
+                const option = document.createElement('option');
+                option.value = customCommand;
+                option.textContent = customCommand;
+
+                // Add the new command to all dropdowns
+                const dropdowns = document.querySelectorAll('.command-select');
+                dropdowns.forEach(dropdown => dropdown.appendChild(option.cloneNode(true)));
+
+                // Clear the input field
+                document.getElementById('customCommand').value = '';
+            } else {
+                alert('Please enter a valid command.');
+            }
+        }
+
+        document.getElementById('connectButton').addEventListener('click', connectToUSB);
+        document.getElementById('disconnectButton').addEventListener('click', disconnectFromUSB);
+    </script>
+
+</body>
+</html>
