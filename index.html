@@ -228,7 +228,7 @@
 </head>
 <body>
 
-    <h1>Configurator v1.1</h1>
+    <h1>Macro Pad Configurator</h1>
     <div class="container">
         <div class="config-panel">
             <h2>Configuration Panel</h2>
@@ -372,8 +372,8 @@
                                     // Display the line in the serial output
                                     document.getElementById('serialOutput').textContent += line + "\n";
 
-                                    // If the line is a space-separated list of commands, update dropdowns
-                                    if (line.includes(" ")) {
+                                    // If the line is a semicolon-separated list of commands, update dropdowns
+                                    if (line.includes(";")) {
                                         updateCommandDropdowns(line);
                                     }
                                 }
@@ -421,14 +421,14 @@
                 document.getElementById('command4').value,
                 document.getElementById('command5').value,
                 document.getElementById('command6').value
-            ].join(" ");
+            ].join(";");
 
             // Get the selected color and remove the '#' symbol
             const color = document.getElementById('colorPicker').value.slice(1);
 
             if (serialPort && serialPort.writable) {
                 const writer = serialPort.writable.getWriter();
-                await writer.write(new TextEncoder().encode(commands + " " + color + "\n")); // Add newline for clarity
+                await writer.write(new TextEncoder().encode(commands + ";" + color + "\n")); // Add newline for clarity
                 writer.releaseLock();
             } else {
                 alert('Not connected to USB device');
@@ -436,7 +436,7 @@
         }
 
         function updateCommandDropdowns(commandsString) {
-            const commands = commandsString.split(" ");
+            const commands = commandsString.split(";");
             const dropdowns = document.querySelectorAll('.command-select');
 
             // Clear only the dynamically added options, not the predefined ones
